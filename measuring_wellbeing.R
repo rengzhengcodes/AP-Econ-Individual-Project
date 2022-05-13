@@ -10,7 +10,7 @@ getwd()
 UN = read_excel(# file name
                 "./Download-GDPconstant-USD-countries.xlsx",
                 # sheet name
-                "Download-GrowthRateGDPPC-USD",
+                "Download-GDPconstant-USD-countr",
                 # number of rows to skip
                 skip = 2
                 )
