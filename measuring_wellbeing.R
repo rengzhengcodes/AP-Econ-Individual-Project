@@ -27,3 +27,8 @@ wide_UN = wide_UN[, -1]
 long_UN = melt(wide_UN, id.vars = c("Country", "IndicatorName"), value.vars = 4:ncol(UN))
 
 head(long_UN)
+
+# changes variable column to Year label
+names(long_UN)[names(long_UN) == "variable"] <- "Year"
+# extracts only the Final consumption expenditure subfield
+cons = subset(long_UN, IndicatorName == "Final consumption expenditure")
