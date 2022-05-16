@@ -40,3 +40,6 @@ missing_by_country = cons %>%
   group_by(Country) %>%
   summarize(available_years=sum(!is.na(value))) %>%
   print()
+
+# gets num of countries with full data
+sum(missing_by_country$available_years == max(missing_by_country$available_years))
