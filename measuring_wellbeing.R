@@ -56,4 +56,16 @@ long_UN$IndicatorName[long_UN$IndicatorName == "Imports of goods and services"] 
 
 long_UN$IndicatorName[long_UN$IndicatorName == "Exports of goods and services"] <- "Exports"
 
-head(long_UN)
+# reshape long_UN data so there's only one row per country and per year
+table_UN <- dcast(long_UN, Country + Year ~ IndicatorName)
+
+# adds a new column for net exports
+table_UN$Net.Exports <- table_UN[, "Exports"]-table_UN[, "Imports"]
+
+# check via taking 3 countries
+sel_countries = c("Brazil", "United States", "China")
+
+# using long format dataset, we get imports, exports, and year for these countries
+sel_UN1 = subset(table_UN,
+                 subset = (Country %in% sel_countries),
+                 select = c("Country", "Year", "Exports", "Imports", "Net.Exports"))
