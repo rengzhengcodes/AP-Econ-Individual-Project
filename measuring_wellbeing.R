@@ -32,3 +32,11 @@ head(long_UN)
 names(long_UN)[names(long_UN) == "variable"] <- "Year"
 # extracts only the Final consumption expenditure subfield
 cons = subset(long_UN, IndicatorName == "Final consumption expenditure")
+
+# pip operator (%>%) is from tidyverse. It means use the result of the current line as the first argument in the next line's fxn.
+
+# Gets the number of missing years by country
+missing_by_country = cons %>%
+  group_by(Country) %>%
+  summarize(available_years=sum(!is.na(value))) %>%
+  print()
