@@ -43,3 +43,17 @@ missing_by_country = cons %>%
 
 # gets num of countries with full data
 sum(missing_by_country$available_years == max(missing_by_country$available_years))
+
+# shortens variable name for future readability
+long_UN$IndicatorName[long_UN$IndicatorName == "Household consumption expenditure (including Non-profit institutions serving households)"] <- "HH.expenditure"
+
+long_UN$IndicatorName[long_UN$IndicatorName == "General government final consumption expenditure"] <-
+  "Gov.Expenditure"
+
+long_UN$IndicatorName[long_UN$IndicatorName == "Gross capital formation"] <- "Capital"
+
+long_UN$IndicatorName[long_UN$IndicatorName == "Imports of goods and services"] <- "Imports"
+
+long_UN$IndicatorName[long_UN$IndicatorName == "Exports of goods and services"] <- "Exports"
+
+head(long_UN)
