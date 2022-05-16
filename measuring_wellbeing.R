@@ -69,3 +69,5 @@ sel_countries = c("Brazil", "United States", "China")
 sel_UN1 = subset(table_UN,
                  subset = (Country %in% sel_countries),
                  select = c("Country", "Year", "Exports", "Imports", "Net.Exports"))
+
+head(sel_UN1)
