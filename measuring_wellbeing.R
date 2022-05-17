@@ -93,3 +93,20 @@ p1 = p1 + geom_line(aes(group = IndicatorName, color = IndicatorName), size = 1)
 
 #display the chart
 p1
+
+# Repeat all steps without subsetting data
+p1 = ggplot(comp, aes(x = Year, y = value, color = IndicatorName))
+p1 = p1 + geom_line(aes(group = IndicatorName), size = 1)
+p1 = p1 + scale_x_discrete(breaks = seq(1970, 2016, by = 10))
+p1 = p1 + scale_y_continuous(name = "Billion US$")
+p1 = p1 + ggtitle("GDP components over time")
+p1 = p1 + scale_colour_discrete(name = "Component")
+p1 = p1 + theme_bw()
+
+# Make a separate chart for each country
+p1 = p1 + facet_wrap(~Country)
+p1 = p1 + scale_colour_discrete(
+  name = "Components of GDP",
+  labels = c("Gross capital formation",
+             "Exports", "Government expenditure", "Household expenditure", "Imports"))
+p1
