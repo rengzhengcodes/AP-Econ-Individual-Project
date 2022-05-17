@@ -45,7 +45,7 @@ missing_by_country = cons %>%
 sum(missing_by_country$available_years == max(missing_by_country$available_years))
 
 # shortens variable name for future readability
-long_UN$IndicatorName[long_UN$IndicatorName == "Household consumption expenditure (including Non-profit institutions serving households)"] <- "HH.expenditure"
+long_UN$IndicatorName[long_UN$IndicatorName == "Household consumption expenditure (including Non-profit institutions serving households)"] <- "HH.Expenditure"
 
 long_UN$IndicatorName[long_UN$IndicatorName == "General government final consumption expenditure"] <-
   "Gov.Expenditure"
@@ -71,3 +71,25 @@ sel_UN1 = subset(table_UN,
                  select = c("Country", "Year", "Exports", "Imports", "Net.Exports"))
 
 head(sel_UN1)
+
+# Select the chosen countries
+comp = subset(long_UN, Country %in% c("United States", "China"))
+
+# value in billion of USD
+comp$value = comp$value / 1e9
+
+comp = subset(comp, select = c("Country", "Year", "IndicatorName", "value"),
+              subset = IndicatorName %in% c("Gov.Expenditure", "HH.Expenditure", "Capital", "Imports", "Exports"))
+
+library(ggplot2)
+# ggplot allows us to build a chart step-by-step.
+p1 = ggplot(subset(comp, Country == "United States"),
+            # Base chart, defining x (horizontal) and y (vertical)
+            # axis variables
+            aes(x = Year, y = value))
+
+# Specify a line chart, with a different colour for each indicator name and line size = 1
+p1 = p1 + geom_line(aes(group = IndicatorName, color = IndicatorName), size = 1)
+
+#display the chart
+p1
