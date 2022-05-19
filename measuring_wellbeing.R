@@ -52,6 +52,8 @@ long_UN$IndicatorName[long_UN$IndicatorName == "Household consumption expenditur
 long_UN$IndicatorName[long_UN$IndicatorName == "General government final consumption expenditure"] <-
   "Gov.Expenditure"
 
+long_UN$IndicatorName[long_UN$IndicatorName == "Final consumption expenditure"] <- "Final.Expenditure"
+
 long_UN$IndicatorName[long_UN$IndicatorName == "Gross capital formation"] <- "Capital"
 
 long_UN$IndicatorName[long_UN$IndicatorName == "Imports of goods and services"] <- "Imports"
@@ -152,16 +154,35 @@ p1 = p1 + scale_colour_discrete(
 p1
 
 # Calculate proportions
-table_UN$p_Capital <- table_UN$Capital / (table_UN$Capital 
-                                          + table_UN$Final.Expenditure 
-                                          + table_UN$Net.Exports)
-table_UN$p_FinalExp <- table_UN$Final.Expenditure / (table_UN$Capital
-                                                     + table_UN$Final.Expenditure
-                                                     + table_UN$Net.Exports) 
-table_UN$p_NetExports <- table_UN$Net.Exports / (table_UN$Capital
-                                                 + table_UN$Final.Expenditure
-                                                 + table_UN$Net.Exports)
+table_UN$p_Capital <- table_UN$Capital / 
+  (table_UN$Capital
+  + table_UN$Final.Expenditure
+  + table_UN$Net.Exports)
+table_UN$p_FinalExp <- table_UN$Final.Expenditure / 
+  (table_UN$Capital
+   + table_UN$Final.Expenditure
+   + table_UN$Net.Exports) 
+table_UN$p_NetExports <- table_UN$Net.Exports / 
+  (table_UN$Capital
+   + table_UN$Final.Expenditure
+   + table_UN$Net.Exports)
 
 sel_countries <- c("Germany", "Japan", "United States", "Albania", "Russian Federation",
                    "Ukraine", "Brazil", "China", "India")
 
+# Using our long format dataset, we select imports, exports, and year for our chosen countries in 2015.
+sel_2015 <- subset(table_UN, subset = (Country %in% sel_countries) & (Year == 2015),
+                   select = c("Country", "Year", "p_FinalExp", "p_Capital", "p_NetExports"))
+
+# Reshape the table into long format, then use ggplot
+sel_2015_m <- melt(sel_2015, id.vars = c("Year", "Country"))
+
+g <- ggplot(sel_2015_m, aes(x = Country, y = value, fill = variable)) + 
+  geom_bar(stat="identity") + coord_flip() + ggtitle("GDP component proportions in 2015") +
+  scale_fill_discrete(name = "Components of GDP",
+                      labels = c("Final expenditure",
+                                 "Gross capital formation",
+                                 "Net Exports")) +
+  theme_bw()
+
+plot(g)
