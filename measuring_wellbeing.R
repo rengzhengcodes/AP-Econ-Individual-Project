@@ -1,3 +1,5 @@
+# https://www.core-econ.org/doing-economics/book/text/04-03.html#r-walk-through-44-plotting-and-annotating-time-series-data
+
 # install necessary functions
 install.packages(c("readxl", "tidyverse", "reshape2"))
 # activates those libraries
@@ -110,3 +112,56 @@ p1 = p1 + scale_colour_discrete(
   labels = c("Gross capital formation",
              "Exports", "Government expenditure", "Household expenditure", "Imports"))
 p1
+
+# Reshape the data to wide format (indicators in columns)
+comp_wide <- dcast(comp, Country + Year ~ IndicatorName)
+
+head(comp_wide)
+
+# Add the new column for net exports = exports - imports
+comp_wide$Net.Exports <- comp_wide[, "Exports"] - comp_wide[, "Imports"]
+
+head(comp_wide)
+
+# Return to long format with the HH.expenditure, Capital, and Net Export variables
+comp2_wide <- subset(comp_wide, select = -c(Exports, Imports))
+
+comp2 <- melt(comp2_wide, id.vars = c("Year", "Country"))
+
+props = comp2 %>% group_by(Country, Year) %>% mutate(proportion = value / sum(value))
+
+# Base line chart
+p1 = ggplot(props, aes(x = Year, y = proportion, color = variable))
+
+p1 = p1 + geom_line(aes(group = variable), size = 1)
+
+p1 = p1 + scale_x_discrete(breaks = seq(1970, 2016, by = 10))
+
+p1 = p1 + ggtitle("GDP component proportions over time")
+
+p1 = p1 + theme_bw()
+
+# Make a separate chart for each country
+p1 = p1 + facet_wrap(~Country)
+
+p1 = p1 + scale_colour_discrete(
+  name = "Components of GDP",
+  labels = c("Gross capital formation", "Government expenditure", 
+             "Household expenditure", "Net Exports"))
+
+p1
+
+# Calculate proportions
+table_UN$p_Capital <- table_UN$Capital / (table_UN$Capital 
+                                          + table_UN$Final.Expenditure 
+                                          + table_UN$Net.Exports)
+table_UN$p_FinalExp <- table_UN$Final.Expenditure / (table_UN$Capital
+                                                     + table_UN$Final.Expenditure
+                                                     + table_UN$Net.Exports) 
+table_UN$p_NetExports <- table_UN$Net.Exports / (table_UN$Capital
+                                                 + table_UN$Final.Expenditure
+                                                 + table_UN$Net.Exports)
+
+sel_countries <- c("Germany", "Japan", "United States", "Albania", "Russian Federation",
+                   "Ukraine", "Brazil", "China", "India")
+
