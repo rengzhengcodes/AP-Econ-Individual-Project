@@ -224,3 +224,28 @@ names(HDR2018)[5] <- "ExpSchool"
 names(HDR2018)[6] <- "MeanSchool"
 names(HDR2018)[7] <- "GNI.capita"
 names(HDR2018)[8] <- "GNI.HDI.rank"
+
+HDR2018$HDI.rank <- as.numeric(HDR2018$HDI.rank)
+HDR2018$Country <- as.factor(HDR2018$Country)
+HDR2018$HDI <- as.numeric(HDR2018$HDI)
+HDR2018$LifeExp <- as.numeric(HDR2018$LifeExp)
+HDR2018$ExpSchool <- as.numeric(HDR2018$ExpSchool)
+HDR2018$MeanSchool <- as.numeric(HDR2018$MeanSchool)
+HDR2018$GNI.capita <- as.numeric(HDR2018$GNI.capita)
+HDR2018$GNI.HDI.rank <- as.numeric(HDR2018$GNI.HDI.rank)
+HDR2018$HDI.rank.2014 <- as.numeric(HDR2018$HDI.rank.2014)
+str(HDR2018)
+
+HDR2018$I.Health <- (HDR2018$LifeExp - 20) / (85 - 20)
+
+HDR2018$I.Education <- ((pmin(HDR2018$ExpSchool, 18) - 0) / 
+                        (18 - 0) + (HDR2018$MeanSchool - 0) /
+                        (15 - 0)) / 2
+
+HDR2018$I.Income <- (log(HDR2018$GNI.capita) - log(100)) /
+                    (log(75000) - log(100))
+
+HDR2018$HDI.calc <- (HDR2018$I.Health * HDR2018$I.Education * HDR2018$I.Income)^(1/3)
+
+HDR2018[, c("HDI", "HDI.calc")]
+
