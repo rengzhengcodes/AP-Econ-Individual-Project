@@ -186,3 +186,41 @@ g <- ggplot(sel_2015_m, aes(x = Country, y = value, fill = variable)) +
   theme_bw()
 
 plot(g)
+
+# File path
+HDR2018 <- read_excel("HDR_data.xlsx",
+                      # Worksheet to import
+                      sheet = "Table 1",
+                      # number of rows to skip
+                      skip = 4)
+
+head(HDR2018)
+str(HDR2018)
+
+# Rename the first column, currently named X_1
+names(HDR2018)[1] <- "HDI.rank"
+
+# Rename the second column, currently named X_2
+names(HDR2018)[2] <- "Country"
+
+# Rename the last column, which contains the 2014 rank
+names(HDR2018)[names(HDR2018) == "HDI rank"] <- "HDI.rank.2014"
+
+# Eliminate the row that contains the column title
+HDR2018 <- subset(HDR2018, 
+              !is.na(HDI.rank) & HDI.rank != "HDI rank")
+
+# Check which variables do NOT (!) start with X_
+sel_columns <- !startsWith(names(HDR2018), "...")
+
+# Select the columns that do not start with X_
+HDR2018 <- subset(HDR2018, select = sel_columns)
+
+str(HDR2018)
+
+names(HDR2018)[3] <- "HDI"
+names(HDR2018)[4] <- "LifeExp"
+names(HDR2018)[5] <- "ExpSchool"
+names(HDR2018)[6] <- "MeanSchool"
+names(HDR2018)[7] <- "GNI.capita"
+names(HDR2018)[8] <- "GNI.HDI.rank"
