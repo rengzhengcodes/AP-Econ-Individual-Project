@@ -81,6 +81,7 @@ comp = subset(long_UN, Country %in% c("United States", "China"))
 
 # value in billion of USD
 comp$value = comp$value / 1e9
+comp$value = round(comp$value, digits = 2)
 
 comp = subset(comp, select = c("Country", "Year", "IndicatorName", "value"),
               subset = IndicatorName %in% c("Gov.Expenditure", "HH.Expenditure", "Capital", "Imports", "Exports"))
@@ -187,6 +188,19 @@ g <- ggplot(sel_2015_m, aes(x = Country, y = value, fill = variable)) +
 
 plot(g)
 
+# Impose the order in the sel_countries object, then use ggplot
+sel_2015_m$Country <- factor(sel_2015_m$Country, levels = sel_countries)
+
+g <- ggplot(sel_2015_m, aes(x = Country, y = value, fill = variable)) +
+      geom_bar(stat = "identity") + coord_flip() + 
+      ggtitle("GDP component proportions in 2015 (ordered)") +
+      scale_fill_discrete(name = "Components of GDP",
+                          labels = c("Final expenditure",
+                                     "Gross capital formation",
+                                     "Net Exports")) +
+      theme_bw()
+
+plot(g)
 # File path
 HDR2018 <- read_excel("HDR_data.xlsx",
                       # Worksheet to import
@@ -248,4 +262,17 @@ HDR2018$I.Income <- (log(HDR2018$GNI.capita) - log(100)) /
 HDR2018$HDI.calc <- (HDR2018$I.Health * HDR2018$I.Education * HDR2018$I.Income)^(1/3)
 
 HDR2018[, c("HDI", "HDI.calc")]
+
+HDR2018$HDI.calc <- round(HDR2018$HDI.calc, digits = 3)
+
+HDR2018$GNI.capita.rank <-
+  rank(-HDR2018$GNI.capita, na.last = "keep") 
+
+# FIlename
+allHDR2018 <- read_excel("2018_all_indicators.xlsx",
+                         # Sheet to import
+                         sheet = "Data")
+
+head(allHDR2018)
+str(HDR2018)
 
